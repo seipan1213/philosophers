@@ -119,18 +119,16 @@ void ph_work_think(t_man *man)
 
 void ph_work_eat(t_man *man)
 {
-	long start;
 	long now;
 
 	pthread_mutex_lock(man->right);
 	ph_put_log(man, PIC_FORK);
 	pthread_mutex_lock(man->left);
 	ph_put_log(man, PIC_FORK);
-	start = get_time_ms();
-	now = start;
-	man->last_eat_time = start;
+	man->last_eat_time = get_time_ms();
+	now = man->last_eat_time;
 	ph_put_log(man, EATTING);
-	while (now - start < man->time_to_eat)
+	while (now - man->last_eat_time < man->time_to_eat)
 	{
 		now = get_time_ms();
 	}

@@ -18,7 +18,7 @@
 #define THINKING "is thinking"
 #define DIED "died"
 
-#define TIME_INTERVAL 200
+#define TIME_INTERVAL 500
 
 typedef struct s_man
 {
