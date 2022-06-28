@@ -7,7 +7,9 @@
 
 #define ARG_ERR "ARGERR"
 
-void put_endl_fd(char *str, int fd);
+int put_err(char *str);
 size_t ft_strlen(char *str);
+int ft_atoi(char *str);
+void ft_bzero(void *s, size_t len);
 
 #endif
