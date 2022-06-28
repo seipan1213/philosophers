@@ -102,6 +102,11 @@ void ph_put_log(t_man *man, char *str)
 	long time;
 
 	pthread_mutex_lock(man->fin);
+	if (*man->is_fin)
+	{
+		pthread_mutex_unlock(man->fin);
+		return;
+	}
 	time = get_time_ms();
 	printf("%ld %d %s\n", time, man->id, str);
 	pthread_mutex_unlock(man->fin);
@@ -118,7 +123,9 @@ void ph_work_eat(t_man *man)
 	long now;
 
 	pthread_mutex_lock(man->right);
+	ph_put_log(man, PIC_FORK);
 	pthread_mutex_lock(man->left);
+	ph_put_log(man, PIC_FORK);
 	start = get_time_ms();
 	now = start;
 	man->last_eat_time = start;
@@ -145,6 +152,7 @@ void *ph_work(void *arg)
 	t_man *man;
 
 	man = (t_man *)arg;
+	man->last_eat_time = get_time_ms();
 	if (man->id % 2 == 1)
 		usleep(TIME_INTERVAL);
 	while (!(*man->is_fin))
@@ -156,19 +164,46 @@ void *ph_work(void *arg)
 	return (NULL);
 }
 
+void *ph_watcher(void *arg)
+{
+	t_man *man;
+	long time;
+
+	man = (t_man *)arg;
+	while (!(*man->is_fin))
+	{
+		time = get_time_ms();
+		if (time - man->last_eat_time >= man->time_to_die)
+		{
+			ph_put_log(man, DIED);
+			*man->is_fin = true;
+		}
+	}
+	return (NULL);
+}
+
 void ph_main(t_philo *ph)
 {
 	int i;
 
+	while (get_time_ms() % 10 != 0)
+		;
 	i = -1;
 	while (++i < ph->number_of_philosophers)
 	{
 		pthread_create(&ph->men[i].thread, NULL, ph_work, &ph->men[i]);
 	}
+	usleep(10);
+	i = -1;
+	while (++i < ph->number_of_philosophers)
+	{
+		pthread_create(&ph->men[i].watcher, NULL, ph_watcher, &ph->men[i]);
+	}
 	i = -1;
 	while (++i < ph->number_of_philosophers)
 	{
 		pthread_join(ph->men[i].thread, NULL);
+		pthread_join(ph->men[i].watcher, NULL);
 	}
 }
 
