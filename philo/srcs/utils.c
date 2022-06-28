@@ -62,3 +62,9 @@ long get_time_ms(void)
 	msec = time.tv_sec * 1000 + time.tv_usec / 1000;
 	return (msec);
 }
+
+void ms_sleep(long ms)
+{
+	usleep(ms * 1000);
+	return;
+}

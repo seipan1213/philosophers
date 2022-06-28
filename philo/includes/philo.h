@@ -18,7 +18,7 @@
 #define THINKING "is thinking"
 #define DIED "died"
 
-#define TIME_INTERVAL 500
+#define TIME_INTERVAL 200 // NOTE: 数msズレる問題
 
 typedef struct s_man
 {
@@ -61,5 +61,6 @@ size_t ft_strlen(char *str);
 int ft_atoi(char *str);
 void ft_bzero(void *s, size_t len);
 long get_time_ms(void);
+void ms_sleep(long ms);
 
 #endif

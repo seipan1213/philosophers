@@ -10,6 +10,8 @@ bool ph_args_init(int argc, char **argv, t_philo *ph)
 	ph->time_to_sleep = ft_atoi(argv[4]);
 	if (argc == 6)
 		ph->number_of_times_each_philosopher_must_eat = ft_atoi(argv[5]);
+	else
+		ph->number_of_times_each_philosopher_must_eat = -1;
 	// TODO: argv 数値判定
 	return (false);
 }
@@ -123,8 +125,17 @@ void ph_work_eat(t_man *man)
 
 	pthread_mutex_lock(man->right);
 	ph_put_log(man, PIC_FORK);
+	if (man->left == man->right)
+	{
+		ms_sleep(man->time_to_die);
+		pthread_mutex_unlock(man->right);
+		return;
+	}
 	pthread_mutex_lock(man->left);
 	ph_put_log(man, PIC_FORK);
+	pthread_mutex_lock(man->eat);
+	(*man->eat_cnt)++;
+	pthread_mutex_unlock(man->eat);
 	man->last_eat_time = get_time_ms();
 	now = man->last_eat_time;
 	ph_put_log(man, EATTING);
@@ -132,9 +143,6 @@ void ph_work_eat(t_man *man)
 	{
 		now = get_time_ms();
 	}
-	pthread_mutex_lock(man->eat);
-	(*man->eat_cnt)++;
-	pthread_mutex_unlock(man->eat);
 	pthread_mutex_unlock(man->right);
 	pthread_mutex_unlock(man->left);
 }
@@ -142,7 +150,7 @@ void ph_work_eat(t_man *man)
 void ph_work_sleep(t_man *man)
 {
 	ph_put_log(man, SLEEPING);
-	usleep(man->time_to_sleep * 1000);
+	ms_sleep(man->time_to_sleep);
 }
 
 void *ph_work(void *arg)
@@ -173,8 +181,17 @@ void *ph_watcher(void *arg)
 		time = get_time_ms();
 		if (time - man->last_eat_time >= man->time_to_die)
 		{
-			ph_put_log(man, DIED);
+			pthread_mutex_lock(man->fin);
+			if (!(*man->is_fin))
+				printf("%ld %d %s\n", time, man->id, DIED);
 			*man->is_fin = true;
+			pthread_mutex_unlock(man->fin);
+		}
+		else if (man->number_of_times_each_philosopher_must_eat >= 0 && *man->eat_cnt >= man->number_of_times_each_philosopher_must_eat)
+		{
+			pthread_mutex_lock(man->fin);
+			*man->is_fin = true;
+			pthread_mutex_unlock(man->fin);
 		}
 	}
 	return (NULL);
@@ -188,15 +205,11 @@ void ph_main(t_philo *ph)
 		;
 	i = -1;
 	while (++i < ph->number_of_philosophers)
-	{
 		pthread_create(&ph->men[i].thread, NULL, ph_work, &ph->men[i]);
-	}
 	usleep(10);
 	i = -1;
 	while (++i < ph->number_of_philosophers)
-	{
 		pthread_create(&ph->men[i].watcher, NULL, ph_watcher, &ph->men[i]);
-	}
 	i = -1;
 	while (++i < ph->number_of_philosophers)
 	{
