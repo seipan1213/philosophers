@@ -12,11 +12,17 @@
 
 typedef struct s_men
 {
+	int number_of_philosophers;
+	int time_to_die;
+	int time_to_eat;
+	int time_to_sleep;
+	int number_of_times_each_philosopher_must_eat;
 	pthread_mutex_t *left;
 	pthread_mutex_t *right;
 	pthread_mutex_t *died;
 	pthread_mutex_t *eat;
 	int *eat_cnt;
+	int id;
 } t_men;
 
 typedef struct s_philo

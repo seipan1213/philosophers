@@ -19,18 +19,24 @@ bool ph_men_init(t_philo *ph)
 	int num;
 	int i;
 
-	i = -1;
 	num = ph->number_of_philosophers;
 	ph->men = malloc(sizeof(t_men) * num);
 	if (ph->men == NULL)
 		return (put_err(MALLOC_ERR));
+	i = -1;
 	while (++i < num)
 	{
+		ph->men[i].id = i + 1;
 		ph->men[i].right = &ph->forks[i];
 		ph->men[i].left = &ph->forks[(i + num - 1) % num];
 		ph->men[i].died = &ph->died;
 		ph->men[i].eat = &ph->eat;
 		ph->men[i].eat_cnt = &ph->eat_cnt;
+		ph->men[i].number_of_philosophers = ph->number_of_philosophers;
+		ph->men[i].time_to_die = ph->time_to_die;
+		ph->men[i].time_to_eat = ph->time_to_eat;
+		ph->men[i].time_to_sleep = ph->time_to_sleep;
+		ph->men[i].number_of_times_each_philosopher_must_eat = ph->number_of_times_each_philosopher_must_eat;
 	}
 	return (false);
 }
@@ -93,7 +99,6 @@ int main(int argc, char **argv)
 
 	if (ph_init(argc, argv, &ph))
 		return (1);
-	printf("%d  %d  %d  %d  %d\n", ph.number_of_philosophers, ph.time_to_die, ph.time_to_eat, ph.time_to_sleep, ph.number_of_times_each_philosopher_must_eat);
 	ph_mutex_destoy(&ph);
 	return (ph_free(&ph, 0));
 }
