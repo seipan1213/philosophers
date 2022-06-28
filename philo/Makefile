@@ -8,7 +8,7 @@ DEPS		=	${OBJS:%.o=%.d}
 
 INCLUDES	=	-I ./includes
 CC			=	cc
-CFLAGS		=	-Wall -Wextra -Werror -MMD -MP
+CFLAGS		=	-Wall -Wextra -Werror -MMD -MP -pthread
 
 all: ${NAME}
 

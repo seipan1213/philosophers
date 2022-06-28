@@ -20,7 +20,7 @@ bool ph_men_init(t_philo *ph)
 	int i;
 
 	num = ph->number_of_philosophers;
-	ph->men = malloc(sizeof(t_men) * num);
+	ph->men = malloc(sizeof(t_man) * num);
 	if (ph->men == NULL)
 		return (put_err(MALLOC_ERR));
 	i = -1;
@@ -83,7 +83,8 @@ int ph_free(t_philo *ph, int ret)
 		free(ph->men);
 	return (ret);
 }
-void ph_mutex_destoy(t_philo *ph)
+
+void ph_end(t_philo *ph)
 {
 	int i;
 
@@ -92,13 +93,88 @@ void ph_mutex_destoy(t_philo *ph)
 		pthread_mutex_destroy(&ph->forks[i]);
 	pthread_mutex_destroy(&ph->died);
 	pthread_mutex_destroy(&ph->eat);
+	ph_free(ph, 0);
 }
+
+void ph_put_log(t_man *man, char *str)
+{
+	long time;
+
+	pthread_mutex_lock(man->died);
+	time = get_time_ms();
+	printf("%ld %d %s\n", time, man->id, str);
+	pthread_mutex_unlock(man->died);
+}
+
+void ph_work_think(t_man *man)
+{
+	ph_put_log(man, THINKING);
+}
+
+void ph_work_eat(t_man *man)
+{
+	long start;
+	long now;
+
+	start = get_time_ms();
+	now = start;
+	pthread_mutex_lock(man->right);
+	pthread_mutex_lock(man->left);
+	ph_put_log(man, EATTING);
+	while (now - start < man->time_to_eat)
+	{
+		now = get_time_ms();
+	}
+	pthread_mutex_lock(man->eat);
+	(*man->eat_cnt)++;
+	pthread_mutex_unlock(man->eat);
+	pthread_mutex_unlock(man->right);
+	pthread_mutex_unlock(man->left);
+}
+
+void ph_work_sleep(t_man *man)
+{
+	ph_put_log(man, SLEEPING);
+	usleep(man->time_to_sleep * 1000);
+}
+
+void *ph_work(void *arg)
+{
+	t_man *man;
+
+	man = (t_man *)arg;
+	if (man->id % 2 == 1)
+		usleep(TIME_INTERVAL);
+	while (true)
+	{
+		ph_work_eat(man);
+		ph_work_sleep(man);
+		ph_work_think(man);
+	}
+}
+
+void ph_main(t_philo *ph)
+{
+	int i;
+
+	i = -1;
+	while (++i < ph->number_of_philosophers)
+	{
+		pthread_create(&ph->men[i].thread, NULL, ph_work, &ph->men[i]);
+	}
+	i = -1;
+	while (++i < ph->number_of_philosophers)
+	{
+		pthread_join(ph->men[i].thread, NULL);
+	}
+}
+
 int main(int argc, char **argv)
 {
 	t_philo ph;
 
 	if (ph_init(argc, argv, &ph))
 		return (1);
-	ph_mutex_destoy(&ph);
-	return (ph_free(&ph, 0));
+	ph_main(&ph);
+	ph_end(&ph);
 }
