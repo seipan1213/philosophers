@@ -29,7 +29,8 @@ bool ph_men_init(t_philo *ph)
 		ph->men[i].id = i + 1;
 		ph->men[i].right = &ph->forks[i];
 		ph->men[i].left = &ph->forks[(i + num - 1) % num];
-		ph->men[i].died = &ph->died;
+		ph->men[i].fin = &ph->fin;
+		ph->men[i].is_fin = &ph->is_fin;
 		ph->men[i].eat = &ph->eat;
 		ph->men[i].eat_cnt = &ph->eat_cnt;
 		ph->men[i].number_of_philosophers = ph->number_of_philosophers;
@@ -56,7 +57,7 @@ bool ph_main_init(t_philo *ph)
 		if (pthread_mutex_init(&ph->forks[i], NULL))
 			return (put_err(MUTEX_ERR));
 	}
-	if (pthread_mutex_init(&ph->died, NULL))
+	if (pthread_mutex_init(&ph->fin, NULL))
 		return (put_err(MUTEX_ERR));
 	if (pthread_mutex_init(&ph->eat, NULL))
 		return (put_err(MUTEX_ERR));
@@ -91,7 +92,7 @@ void ph_end(t_philo *ph)
 	i = -1;
 	while (++i < ph->number_of_philosophers)
 		pthread_mutex_destroy(&ph->forks[i]);
-	pthread_mutex_destroy(&ph->died);
+	pthread_mutex_destroy(&ph->fin);
 	pthread_mutex_destroy(&ph->eat);
 	ph_free(ph, 0);
 }
@@ -100,10 +101,10 @@ void ph_put_log(t_man *man, char *str)
 {
 	long time;
 
-	pthread_mutex_lock(man->died);
+	pthread_mutex_lock(man->fin);
 	time = get_time_ms();
 	printf("%ld %d %s\n", time, man->id, str);
-	pthread_mutex_unlock(man->died);
+	pthread_mutex_unlock(man->fin);
 }
 
 void ph_work_think(t_man *man)
@@ -116,10 +117,11 @@ void ph_work_eat(t_man *man)
 	long start;
 	long now;
 
-	start = get_time_ms();
-	now = start;
 	pthread_mutex_lock(man->right);
 	pthread_mutex_lock(man->left);
+	start = get_time_ms();
+	now = start;
+	man->last_eat_time = start;
 	ph_put_log(man, EATTING);
 	while (now - start < man->time_to_eat)
 	{
@@ -145,12 +147,13 @@ void *ph_work(void *arg)
 	man = (t_man *)arg;
 	if (man->id % 2 == 1)
 		usleep(TIME_INTERVAL);
-	while (true)
+	while (!(*man->is_fin))
 	{
 		ph_work_eat(man);
 		ph_work_sleep(man);
 		ph_work_think(man);
 	}
+	return (NULL);
 }
 
 void ph_main(t_philo *ph)

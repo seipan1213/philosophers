@@ -29,11 +29,13 @@ typedef struct s_man
 	int number_of_times_each_philosopher_must_eat;
 	pthread_mutex_t *left;
 	pthread_mutex_t *right;
-	pthread_mutex_t *died;
+	pthread_mutex_t *fin;
 	pthread_mutex_t *eat;
 	int *eat_cnt;
 	int id;
+	long last_eat_time;
 	pthread_t thread;
+	bool *is_fin;
 } t_man;
 
 typedef struct s_philo
@@ -45,9 +47,10 @@ typedef struct s_philo
 	int number_of_times_each_philosopher_must_eat;
 	pthread_mutex_t *forks;
 	t_man *men;
-	pthread_mutex_t died;
+	pthread_mutex_t fin;
 	pthread_mutex_t eat;
 	int eat_cnt;
+	bool is_fin;
 } t_philo;
 
 int ph_free(t_philo *ph, int ret);
