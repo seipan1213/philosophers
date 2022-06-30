@@ -124,7 +124,9 @@ void ph_work_eat(t_man *man)
 	long start;
 
 	pthread_mutex_lock(man->right);
+	start = get_time_ms();
 	ph_put_log(man, PIC_FORK);
+	start = get_time_ms() - start;
 	if (man->left == man->right)
 	{
 		ms_sleep(man->time_to_die);
@@ -132,7 +134,7 @@ void ph_work_eat(t_man *man)
 		return;
 	}
 	pthread_mutex_lock(man->left);
-	start = get_time_ms();
+	start += get_time_ms();
 	ph_put_log(man, PIC_FORK);
 	pthread_mutex_lock(man->eat);
 	(*man->eat_cnt)++;
