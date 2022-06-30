@@ -121,7 +121,7 @@ void ph_work_think(t_man *man)
 
 void ph_work_eat(t_man *man)
 {
-	long now;
+	long start;
 
 	pthread_mutex_lock(man->right);
 	ph_put_log(man, PIC_FORK);
@@ -132,25 +132,25 @@ void ph_work_eat(t_man *man)
 		return;
 	}
 	pthread_mutex_lock(man->left);
+	start = get_time_ms();
 	ph_put_log(man, PIC_FORK);
 	pthread_mutex_lock(man->eat);
 	(*man->eat_cnt)++;
 	pthread_mutex_unlock(man->eat);
 	man->last_eat_time = get_time_ms();
-	now = man->last_eat_time;
 	ph_put_log(man, EATTING);
-	while (now - man->last_eat_time < man->time_to_eat)
-	{
-		now = get_time_ms();
-	}
+	ms_sleep(man->time_to_eat - (get_time_ms() - start));
 	pthread_mutex_unlock(man->right);
 	pthread_mutex_unlock(man->left);
 }
 
 void ph_work_sleep(t_man *man)
 {
+	long start;
+
+	start = get_time_ms();
 	ph_put_log(man, SLEEPING);
-	ms_sleep(man->time_to_sleep);
+	ms_sleep(man->time_to_sleep - (get_time_ms() - start));
 }
 
 void *ph_work(void *arg)
@@ -193,6 +193,7 @@ void *ph_watcher(void *arg)
 			*man->is_fin = true;
 			pthread_mutex_unlock(man->fin);
 		}
+		usleep(500);
 	}
 	return (NULL);
 }
