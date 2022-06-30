@@ -35,7 +35,6 @@ typedef struct s_man
 	int id;
 	long last_eat_time;
 	pthread_t thread;
-	pthread_t watcher;
 	bool *is_fin;
 } t_man;
 
@@ -52,6 +51,7 @@ typedef struct s_philo
 	pthread_mutex_t eat;
 	int eat_cnt;
 	bool is_fin;
+	pthread_t watcher;
 } t_philo;
 
 int ph_free(t_philo *ph, int ret);
