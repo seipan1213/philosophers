@@ -186,7 +186,6 @@ void *ph_work(void *arg)
 		ph_work_sleep(man);
 		ph_work_think(man);
 	}
-	pthread_mutex_unlock(man->fin);
 	return (NULL);
 }
 
