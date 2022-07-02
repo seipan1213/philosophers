@@ -13,12 +13,12 @@
 #define MUTEX_ERR "MUTEXERR"
 
 #define PIC_FORK "has taken a fork"
-#define EATTING "is eating"
+#define EATING "is eating"
 #define SLEEPING "is sleeping"
 #define THINKING "is thinking"
 #define DIED "died"
 
-#define TIME_INTERVAL 200 // NOTE: 数msズレる問題
+#define TIME_INTERVAL 500 // NOTE: 数msズレる問題
 
 typedef struct s_man
 {
@@ -31,11 +31,13 @@ typedef struct s_man
 	pthread_mutex_t *right;
 	pthread_mutex_t *fin;
 	pthread_mutex_t *eat;
+	pthread_mutex_t last_eat;
 	int *eat_cnt;
 	int id;
 	long last_eat_time;
 	pthread_t thread;
 	bool *is_fin;
+	pthread_t watcher;
 } t_man;
 
 typedef struct s_philo
@@ -51,7 +53,6 @@ typedef struct s_philo
 	pthread_mutex_t eat;
 	int eat_cnt;
 	bool is_fin;
-	pthread_t watcher;
 } t_philo;
 
 int ph_free(t_philo *ph, int ret);

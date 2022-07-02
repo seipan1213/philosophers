@@ -1,5 +1,20 @@
 #include "philo.h"
 
+void last_etime_update(t_man *man)
+{
+	pthread_mutex_lock(&man->last_eat);
+	man->last_eat_time = get_time_ms();
+	pthread_mutex_unlock(&man->last_eat);
+}
+
+void eat_cnt_update(t_man *man, int inc)
+{
+	pthread_mutex_lock(man->eat);
+	(*man->eat_cnt) += inc;
+	printf("%d\n", *man->eat_cnt);
+	pthread_mutex_unlock(man->eat);
+}
+
 bool ph_args_init(int argc, char **argv, t_philo *ph)
 {
 	if (argc != 5 && argc != 6)
@@ -136,11 +151,9 @@ void ph_work_eat(t_man *man)
 		pthread_mutex_lock(man->right);
 	start = get_time_ms() - start;
 	ph_put_log(man, PIC_FORK);
-	pthread_mutex_lock(man->eat);
-	(*man->eat_cnt)++;
-	pthread_mutex_unlock(man->eat);
-	man->last_eat_time = get_time_ms();
-	ph_put_log(man, EATTING);
+	ph_put_log(man, EATING);
+	last_etime_update(man);
+	eat_cnt_update(man, 1);
 	ms_sleep(man->time_to_eat - (get_time_ms() - start));
 	pthread_mutex_unlock(man->right);
 	pthread_mutex_unlock(man->left);
@@ -160,7 +173,7 @@ void *ph_work(void *arg)
 	t_man *man;
 
 	man = (t_man *)arg;
-	man->last_eat_time = get_time_ms();
+	last_etime_update(man);
 	if (man->id % 2 == 1)
 		usleep(TIME_INTERVAL);
 	while (!(*man->is_fin))
@@ -169,40 +182,44 @@ void *ph_work(void *arg)
 		ph_work_sleep(man);
 		ph_work_think(man);
 	}
+	pthread_mutex_unlock(man->fin);
 	return (NULL);
 }
 
 void *ph_watcher(void *arg)
 {
-	t_philo *ph;
 	long time;
-	int i;
 	t_man *man;
 
-	ph = (t_philo *)arg;
-	while (!(ph->is_fin))
+	man = (t_man *)arg;
+	while (true)
 	{
-		i = -1;
-		while (++i < ph->number_of_philosophers)
+		time = get_time_ms();
+		pthread_mutex_lock(&man->last_eat);
+		pthread_mutex_lock(man->eat);
+		if (time - man->last_eat_time >= man->time_to_die)
 		{
-			man = &ph->men[i];
-			time = get_time_ms();
-			if (time - man->last_eat_time >= man->time_to_die)
-			{
-				pthread_mutex_lock(man->fin);
-				if (!(*man->is_fin))
-					printf("%ld %d %s\n", time, man->id, DIED);
-				*man->is_fin = true;
-				pthread_mutex_unlock(man->fin);
-			}
-			else if (ph->number_of_times_each_philosopher_must_eat >= 0 && ph->eat_cnt >= man->number_of_times_each_philosopher_must_eat)
-			{
-				pthread_mutex_lock(man->fin);
-				*man->is_fin = true;
-				pthread_mutex_unlock(man->fin);
-			}
+			pthread_mutex_lock(man->fin);
+			if (!(*man->is_fin))
+				printf("%ld %d %s\n", time, man->id, DIED);
+			*man->is_fin = true;
+			pthread_mutex_unlock(man->fin);
 		}
-		usleep(500);
+		else if (man->number_of_times_each_philosopher_must_eat > 0 && *man->eat_cnt >= man->number_of_times_each_philosopher_must_eat)
+		{
+			pthread_mutex_lock(man->fin);
+			*man->is_fin = true;
+			pthread_mutex_unlock(man->fin);
+		}
+		pthread_mutex_unlock(&man->last_eat);
+		pthread_mutex_unlock(man->eat);
+		pthread_mutex_lock(man->fin);
+		if (*man->is_fin)
+		{
+			pthread_mutex_unlock(man->fin);
+			break;
+		}
+		pthread_mutex_unlock(man->fin);
 	}
 	return (NULL);
 }
@@ -218,13 +235,14 @@ void ph_main(t_philo *ph)
 		pthread_create(&ph->men[i].thread, NULL, ph_work, &ph->men[i]);
 	usleep(10);
 	i = -1;
-	pthread_create(&ph->watcher, NULL, ph_watcher, ph);
+	while (++i < ph->number_of_philosophers)
+		pthread_create(&ph->men[i].watcher, NULL, ph_watcher, &ph->men[i]);
 	i = -1;
 	while (++i < ph->number_of_philosophers)
 	{
 		pthread_join(ph->men[i].thread, NULL);
+		pthread_join(ph->men[i].watcher, NULL);
 	}
-	pthread_join(ph->watcher, NULL);
 }
 
 int main(int argc, char **argv)
