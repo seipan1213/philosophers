@@ -11,8 +11,17 @@ void eat_cnt_update(t_man *man, int inc)
 {
 	pthread_mutex_lock(man->eat);
 	(*man->eat_cnt) += inc;
-	printf("%d\n", *man->eat_cnt);
 	pthread_mutex_unlock(man->eat);
+}
+
+bool is_finish(t_man *man)
+{
+	bool is_fin;
+
+	pthread_mutex_lock(man->fin);
+	is_fin = *man->is_fin;
+	pthread_mutex_unlock(man->fin);
+	return (is_fin);
 }
 
 bool ph_args_init(int argc, char **argv, t_philo *ph)
@@ -118,15 +127,10 @@ void ph_put_log(t_man *man, char *str)
 {
 	long time;
 
-	pthread_mutex_lock(man->fin);
-	if (*man->is_fin)
-	{
-		pthread_mutex_unlock(man->fin);
+	if (is_finish(man))
 		return;
-	}
 	time = get_time_ms();
 	printf("%ld %d %s\n", time, man->id, str);
-	pthread_mutex_unlock(man->fin);
 }
 
 void ph_work_think(t_man *man)
@@ -152,8 +156,8 @@ void ph_work_eat(t_man *man)
 	start = get_time_ms() - start;
 	ph_put_log(man, PIC_FORK);
 	ph_put_log(man, EATING);
-	last_etime_update(man);
 	eat_cnt_update(man, 1);
+	last_etime_update(man);
 	ms_sleep(man->time_to_eat - (get_time_ms() - start));
 	pthread_mutex_unlock(man->right);
 	pthread_mutex_unlock(man->left);
@@ -176,7 +180,7 @@ void *ph_work(void *arg)
 	last_etime_update(man);
 	if (man->id % 2 == 1)
 		usleep(TIME_INTERVAL);
-	while (!(*man->is_fin))
+	while (!is_finish(man))
 	{
 		ph_work_eat(man);
 		ph_work_sleep(man);
@@ -205,7 +209,7 @@ void *ph_watcher(void *arg)
 			*man->is_fin = true;
 			pthread_mutex_unlock(man->fin);
 		}
-		else if (man->number_of_times_each_philosopher_must_eat > 0 && *man->eat_cnt >= man->number_of_times_each_philosopher_must_eat)
+		else if (man->number_of_times_each_philosopher_must_eat > 0 && *man->eat_cnt >= man->number_of_times_each_philosopher_must_eat * man->number_of_philosophers)
 		{
 			pthread_mutex_lock(man->fin);
 			*man->is_fin = true;
@@ -213,13 +217,8 @@ void *ph_watcher(void *arg)
 		}
 		pthread_mutex_unlock(&man->last_eat);
 		pthread_mutex_unlock(man->eat);
-		pthread_mutex_lock(man->fin);
-		if (*man->is_fin)
-		{
-			pthread_mutex_unlock(man->fin);
+		if (is_finish(man))
 			break;
-		}
-		pthread_mutex_unlock(man->fin);
 	}
 	return (NULL);
 }
