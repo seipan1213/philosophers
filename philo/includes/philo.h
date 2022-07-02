@@ -55,13 +55,32 @@ typedef struct s_philo
 	bool is_fin;
 } t_philo;
 
-int ph_free(t_philo *ph, int ret);
+void ph_work_think(t_man *man);
+void ph_work_eat(t_man *man);
+void ph_work_sleep(t_man *man);
+void *ph_work(void *arg);
+void ph_main(t_philo *ph);
 
 int put_err(char *str);
 size_t ft_strlen(char *str);
 int ft_atoi(char *str);
 void ft_bzero(void *s, size_t len);
 long get_time_ms(void);
+
 void ms_sleep(long ms);
+void last_etime_update(t_man *man);
+void eat_cnt_update(t_man *man, int inc);
+bool is_finish(t_man *man);
+
+bool ph_args_init(int argc, char **argv, t_philo *ph);
+bool ph_men_init(t_philo *ph);
+bool ph_main_init(t_philo *ph);
+bool ph_init(int argc, char **argv, t_philo *ph);
+
+int ph_free(t_philo *ph, int ret);
+void ph_end(t_philo *ph);
+void ph_put_log(t_man *man, char *str);
+
+void *ph_watcher(void *arg);
 
 #endif
