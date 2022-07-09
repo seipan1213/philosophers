@@ -87,8 +87,6 @@ void ph_main(t_philo *ph)
 {
 	int i;
 
-	while (get_time_ms() % 100 != 0)
-		;
 	i = -1;
 	pthread_mutex_lock(&ph->fin);
 	while (++i < ph->number_of_philosophers)
@@ -100,6 +98,8 @@ void ph_main(t_philo *ph)
 			return;
 		}
 	}
+	while (get_time_ms() % 100 != 0)
+		;
 	pthread_mutex_unlock(&ph->fin);
 	i = -1;
 	while (++i < ph->number_of_philosophers)
