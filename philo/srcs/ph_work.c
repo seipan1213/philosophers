@@ -6,7 +6,7 @@
 /*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:38:25 by sehattor          #+#    #+#             */
-/*   Updated: 2022/07/09 22:55:14 by sehattor         ###   ########.fr       */
+/*   Updated: 2022/07/09 23:00:06 by sehattor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,15 @@ void	ph_work_think(t_man *man)
 
 bool	ph_pick_fork(t_man *man)
 {
-	if (man->id % 2)
-		pthread_mutex_lock(man->right);
-	else
-		pthread_mutex_lock(man->left);
+	pthread_mutex_lock(man->right);
 	ph_put_log(man, PIC_FORK);
 	if (man->right == man->left)
 	{
 		man_sleep(man->time_to_die, man);
-		if (man->id % 2)
-			pthread_mutex_unlock(man->right);
-		else
-			pthread_mutex_unlock(man->left);
+		pthread_mutex_unlock(man->right);
 		return (true);
 	}
-	if (man->id % 2)
-		pthread_mutex_lock(man->left);
-	else
-		pthread_mutex_lock(man->right);
+	pthread_mutex_lock(man->left);
 	return (false);
 }
 
