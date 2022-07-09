@@ -9,23 +9,18 @@ void ph_work_eat(t_man *man)
 {
 	long start;
 
-	if (man->id % 2 == 0)
-		pthread_mutex_lock(man->right);
-	else
-		pthread_mutex_lock(man->left);
+	pthread_mutex_lock(man->right);
+
 	start = get_time_ms();
 	ph_put_log(man, PIC_FORK);
 	start = get_time_ms() - start;
-	if (man->id % 2 == 0)
-		pthread_mutex_lock(man->left);
-	else
-		pthread_mutex_lock(man->right);
+	pthread_mutex_lock(man->left);
 	start = get_time_ms() - start;
 	ph_put_log(man, PIC_FORK);
 	ph_put_log(man, EATING);
 	eat_cnt_update(man, 1);
 	last_etime_update(man);
-	ms_sleep(man->time_to_eat - (get_time_ms() - start));
+	man_sleep(man->time_to_eat - (get_time_ms() - start), man);
 	pthread_mutex_unlock(man->right);
 	pthread_mutex_unlock(man->left);
 }
@@ -36,7 +31,7 @@ void ph_work_sleep(t_man *man)
 
 	start = get_time_ms();
 	ph_put_log(man, SLEEPING);
-	ms_sleep(man->time_to_sleep - (get_time_ms() - start));
+	man_sleep(man->time_to_sleep - (get_time_ms() - start), man);
 }
 
 void *ph_work(void *arg)
@@ -60,7 +55,7 @@ void ph_main(t_philo *ph)
 {
 	int i;
 
-	while (get_time_ms() % 10 != 0)
+	while (get_time_ms() % 100 != 0)
 		;
 	i = -1;
 	while (++i < ph->number_of_philosophers)

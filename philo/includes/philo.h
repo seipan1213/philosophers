@@ -67,7 +67,7 @@ int ft_atoi(char *str);
 void ft_bzero(void *s, size_t len);
 long get_time_ms(void);
 
-void ms_sleep(long ms);
+void man_sleep(long sleep_time, t_man *man);
 void last_etime_update(t_man *man);
 void eat_cnt_update(t_man *man, int inc);
 bool is_finish(t_man *man);

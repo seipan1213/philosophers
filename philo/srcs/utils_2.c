@@ -1,8 +1,19 @@
 #include "philo.h"
 
-void ms_sleep(long ms)
+void man_sleep(long sleep_time, t_man *man)
 {
-	usleep(ms * 1000);
+	long start;
+	long now;
+
+	start = get_time_ms();
+	now = start;
+	while ((now - start) < sleep_time)
+	{
+		if (is_finish(man))
+			return;
+		usleep(100);
+		now = get_time_ms();
+	}
 	return;
 }
 
