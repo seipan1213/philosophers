@@ -55,7 +55,7 @@ void *ph_work(void *arg)
 	set_last_eat_time(man);
 	get_is_fin(man);
 	if (man->id % 2 == 1)
-		usleep(TIME_INTERVAL);
+		man_sleep(man->time_to_eat / 2, man);
 	while (!get_is_fin(man))
 	{
 		ph_work_eat(man);
