@@ -16,9 +16,12 @@ void ph_end(t_philo *ph)
 
 	i = -1;
 	while (++i < ph->number_of_philosophers)
+	{
 		pthread_mutex_destroy(&ph->forks[i]);
+		pthread_mutex_destroy(&ph->men[i].eat);
+	}
 	pthread_mutex_destroy(&ph->fin);
-	pthread_mutex_destroy(&ph->eat);
+	pthread_mutex_destroy(&ph->print);
 	ph_free(ph, 0);
 }
 

@@ -41,17 +41,17 @@ bool ph_men_init(t_philo *ph)
 	ph->men = malloc(sizeof(t_man) * num);
 	if (ph->men == NULL)
 		return (put_err(MALLOC_ERR));
+	ft_bzero(ph->men, sizeof(t_man) * num);
 	i = -1;
 	while (++i < num)
 	{
-		if (pthread_mutex_init(&ph->men[i].last_eat, NULL))
+		if (pthread_mutex_init(&ph->men[i].eat, NULL))
 			return (put_err(MUTEX_ERR));
 		ph->men[i].id = i + 1;
 		ph->men[i].right = &ph->forks[i];
 		ph->men[i].left = &ph->forks[(i + num - 1) % num];
 		ph->men[i].fin = &ph->fin;
 		ph->men[i].is_fin = &ph->is_fin;
-		ph->men[i].eat = &ph->eat;
 		ph->men[i].eat_cnt = &ph->eat_cnt;
 		ph->men[i].print = &ph->print;
 		ph->men[i].number_of_philosophers = ph->number_of_philosophers;
@@ -79,8 +79,6 @@ bool ph_main_init(t_philo *ph)
 			return (put_err(MUTEX_ERR));
 	}
 	if (pthread_mutex_init(&ph->fin, NULL))
-		return (put_err(MUTEX_ERR));
-	if (pthread_mutex_init(&ph->eat, NULL))
 		return (put_err(MUTEX_ERR));
 	if (pthread_mutex_init(&ph->print, NULL))
 		return (put_err(MUTEX_ERR));

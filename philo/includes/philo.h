@@ -28,8 +28,7 @@ typedef struct s_man
 	pthread_mutex_t *left;
 	pthread_mutex_t *right;
 	pthread_mutex_t *fin;
-	pthread_mutex_t *eat;
-	pthread_mutex_t last_eat;
+	pthread_mutex_t eat;
 	pthread_mutex_t *print;
 	int *eat_cnt;
 	int id;
@@ -49,7 +48,6 @@ typedef struct s_philo
 	pthread_mutex_t *forks;
 	t_man *men;
 	pthread_mutex_t fin;
-	pthread_mutex_t eat;
 	pthread_mutex_t print;
 	int eat_cnt;
 	bool is_fin;
@@ -70,7 +68,6 @@ long get_time_ms(void);
 void man_sleep(long sleep_time, t_man *man);
 
 int get_eat_cnt(t_man *man);
-void eat_cnt_increment(t_man *man, int inc);
 bool get_is_fin(t_man *man);
 void set_is_fin(t_man *man, bool is_fin);
 long get_last_eat_time(t_man *man);

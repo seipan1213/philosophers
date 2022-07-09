@@ -29,7 +29,6 @@ void ph_work_eat(t_man *man)
 	start = get_time_ms();
 	ph_put_log(man, PIC_FORK);
 	ph_put_log(man, EATING);
-	eat_cnt_increment(man, 1);
 	set_last_eat_time(man);
 	man_sleep(man->time_to_eat - (get_time_ms() - start), man);
 	pthread_mutex_unlock(man->right);
