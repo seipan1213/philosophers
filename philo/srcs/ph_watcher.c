@@ -17,13 +17,13 @@ void ph_watcher(void *arg)
 			time = get_time_ms();
 			if (time - get_last_eat_time(&ph->men[i]) >= ph->time_to_die)
 			{
-				pthread_mutex_lock(&ph->fin);
 				pthread_mutex_lock(&ph->print);
+				pthread_mutex_lock(&ph->fin);
 				if (!ph->is_fin)
 					printf("%ld %d %s\n", get_time_ms(), ph->men[i].id, DIED);
 				ph->is_fin = true;
-				pthread_mutex_unlock(&ph->print);
 				pthread_mutex_unlock(&ph->fin);
+				pthread_mutex_unlock(&ph->print);
 				return;
 			}
 			else if (ph->number_of_times_each_philosopher_must_eat > 0 && get_eat_cnt(&ph->men[i]) >= ph->number_of_times_each_philosopher_must_eat)
