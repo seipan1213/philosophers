@@ -6,7 +6,7 @@
 /*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:49:40 by sehattor          #+#    #+#             */
-/*   Updated: 2022/07/09 22:56:16 by sehattor         ###   ########.fr       */
+/*   Updated: 2022/07/09 23:09:43 by sehattor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int					get_eat_cnt(t_man *man);
 bool				get_is_fin(t_man *man);
 void				set_is_fin(t_man *man, bool is_fin);
 long				get_last_eat_time(t_man *man);
-void				set_last_eat_time(t_man *man);
+void				set_last_eat_time(t_man *man, bool is_cnt);
 
 /* init */
 bool				ph_args_init(int argc, char **argv, t_philo *ph);
