@@ -6,7 +6,7 @@
 /*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:49:40 by sehattor          #+#    #+#             */
-/*   Updated: 2022/07/09 23:09:43 by sehattor         ###   ########.fr       */
+/*   Updated: 2022/07/09 23:49:24 by sehattor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # include <unistd.h>
 
 # define ARG_ERR "Error\nargsNum: \
-					4 or 5(range: int)\nphiloNum max:200   other min:60"
+4 or 5(range: int)\nphiloNum max:200   other min:60"
 # define MALLOC_ERR "Error\nmalloc"
 # define MUTEX_ERR "Error\nmutex"
 
