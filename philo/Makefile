@@ -1,7 +1,7 @@
 NAME		=	philo
 SRCSDIR		=	./srcs
 
-SRCS_NAME	=	init.c  main.c  ph_main.c  ph_utils.c  ph_watcher.c  utils_1.c  utils_2.c
+SRCS_NAME	=	init.c  main.c  ph_main.c  ph_utils.c  ph_watcher.c  utils_1.c  utils_2.c utils_3.c
 SRCS		=	${addprefix ${SRCSDIR}/, ${SRCS_NAME}}
 OBJS		=	${SRCS:.c=.o}
 DEPS		=	${OBJS:%.o=%.d}

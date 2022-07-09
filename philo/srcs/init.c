@@ -1,20 +1,5 @@
 #include "philo.h"
 
-bool ph_check_args(t_philo *ph, int argc)
-{
-	if (ph->number_of_philosophers < 1 || ph->number_of_philosophers > 200)
-		return (true);
-	if (ph->time_to_die < 60)
-		return (true);
-	if (ph->time_to_eat < 60)
-		return (true);
-	if (ph->time_to_sleep < 60)
-		return (true);
-	if (argc == 6 && ph->number_of_times_each_philosopher_must_eat < 1)
-		return (true);
-	return (false);
-}
-
 bool ph_args_init(int argc, char **argv, t_philo *ph)
 {
 	if (argc != 5 && argc != 6)
@@ -32,6 +17,25 @@ bool ph_args_init(int argc, char **argv, t_philo *ph)
 	return (false);
 }
 
+bool ph_man_init(t_philo *ph, int i, int num)
+{
+	if (pthread_mutex_init(&ph->men[i].eat, NULL))
+		return (put_err(MUTEX_ERR));
+	ph->men[i].id = i + 1;
+	ph->men[i].right = &ph->forks[i];
+	ph->men[i].left = &ph->forks[(i + num - 1) % num];
+	ph->men[i].fin = &ph->fin;
+	ph->men[i].is_fin = &ph->is_fin;
+	ph->men[i].print = &ph->print;
+	ph->men[i].number_of_philosophers = ph->number_of_philosophers;
+	ph->men[i].time_to_die = ph->time_to_die;
+	ph->men[i].time_to_eat = ph->time_to_eat;
+	ph->men[i].time_to_sleep = ph->time_to_sleep;
+	ph->men[i].number_of_times_each_philosopher_must_eat
+		= ph->number_of_times_each_philosopher_must_eat;
+	return (false);
+}
+
 bool ph_men_init(t_philo *ph)
 {
 	int num;
@@ -45,19 +49,8 @@ bool ph_men_init(t_philo *ph)
 	i = -1;
 	while (++i < num)
 	{
-		if (pthread_mutex_init(&ph->men[i].eat, NULL))
-			return (put_err(MUTEX_ERR));
-		ph->men[i].id = i + 1;
-		ph->men[i].right = &ph->forks[i];
-		ph->men[i].left = &ph->forks[(i + num - 1) % num];
-		ph->men[i].fin = &ph->fin;
-		ph->men[i].is_fin = &ph->is_fin;
-		ph->men[i].print = &ph->print;
-		ph->men[i].number_of_philosophers = ph->number_of_philosophers;
-		ph->men[i].time_to_die = ph->time_to_die;
-		ph->men[i].time_to_eat = ph->time_to_eat;
-		ph->men[i].time_to_sleep = ph->time_to_sleep;
-		ph->men[i].number_of_times_each_philosopher_must_eat = ph->number_of_times_each_philosopher_must_eat;
+		if (ph_man_init(ph, i, num))
+			return (true);
 	}
 	return (false);
 }

@@ -1,6 +1,21 @@
 
 #include "philo.h"
 
+bool ph_check_args(t_philo *ph, int argc)
+{
+	if (ph->number_of_philosophers < 1 || ph->number_of_philosophers > 200)
+		return (true);
+	if (ph->time_to_die < 60)
+		return (true);
+	if (ph->time_to_eat < 60)
+		return (true);
+	if (ph->time_to_sleep < 60)
+		return (true);
+	if (argc == 6 && ph->number_of_times_each_philosopher_must_eat < 1)
+		return (true);
+	return (false);
+}
+
 int ph_free(t_philo *ph, int ret)
 {
 	if (ph->forks != NULL)
@@ -38,4 +53,13 @@ void ph_put_log(t_man *man, char *str)
 	time = get_time_ms();
 	printf("%ld %d %s\n", time, man->id, str);
 	pthread_mutex_unlock(man->print);
+}
+
+void men_thread_detach(t_man *men, int size)
+{
+	int i;
+
+	i = -1;
+	while (++i < size)
+		pthread_detach(men[i].thread);
 }

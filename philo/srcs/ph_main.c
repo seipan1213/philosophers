@@ -64,15 +64,6 @@ void *ph_work(void *arg)
 	return (NULL);
 }
 
-void men_thread_detach(t_man *men, int size)
-{
-	int i;
-
-	i = -1;
-	while (++i < size)
-		pthread_detach(men[i].thread);
-}
-
 void ph_main(t_philo *ph)
 {
 	int i;
@@ -94,7 +85,5 @@ void ph_main(t_philo *ph)
 	ph_watcher(ph);
 	i = -1;
 	while (++i < ph->number_of_philosophers)
-	{
 		pthread_join(ph->men[i].thread, NULL);
-	}
 }

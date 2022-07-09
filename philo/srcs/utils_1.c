@@ -70,13 +70,3 @@ void ft_bzero(void *s, size_t len)
 	while (len--)
 		*(str + len) = '\0';
 }
-
-long get_time_ms(void)
-{
-	struct timeval time;
-	long msec;
-
-	gettimeofday(&time, NULL);
-	msec = time.tv_sec * 1000 + time.tv_usec / 1000;
-	return (msec);
-}

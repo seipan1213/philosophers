@@ -8,4 +8,5 @@ int main(int argc, char **argv)
 		return (1);
 	ph_main(&ph);
 	ph_end(&ph);
+	//TODO: １人の場合処理
 }
