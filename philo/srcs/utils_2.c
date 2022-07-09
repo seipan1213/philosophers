@@ -9,7 +9,7 @@ void man_sleep(long sleep_time, t_man *man)
 	now = start;
 	while ((now - start) < sleep_time)
 	{
-		if (is_finish(man))
+		if (get_is_fin(man))
 			return;
 		usleep(100);
 		now = get_time_ms();
@@ -17,21 +17,24 @@ void man_sleep(long sleep_time, t_man *man)
 	return;
 }
 
-void last_etime_update(t_man *man)
+int get_eat_cnt(t_man *man)
 {
-	pthread_mutex_lock(&man->last_eat);
-	man->last_eat_time = get_time_ms();
-	pthread_mutex_unlock(&man->last_eat);
+	int eat_cnt;
+
+	pthread_mutex_lock(man->eat);
+	eat_cnt = (*man->eat_cnt);
+	pthread_mutex_unlock(man->eat);
+	return (eat_cnt);
 }
 
-void eat_cnt_update(t_man *man, int inc)
+void eat_cnt_increment(t_man *man, int inc)
 {
 	pthread_mutex_lock(man->eat);
 	(*man->eat_cnt) += inc;
 	pthread_mutex_unlock(man->eat);
 }
 
-bool is_finish(t_man *man)
+bool get_is_fin(t_man *man)
 {
 	bool is_fin;
 
@@ -39,4 +42,28 @@ bool is_finish(t_man *man)
 	is_fin = *man->is_fin;
 	pthread_mutex_unlock(man->fin);
 	return (is_fin);
+}
+
+void set_is_fin(t_man *man, bool is_fin)
+{
+	pthread_mutex_lock(man->fin);
+	*man->is_fin = is_fin;
+	pthread_mutex_unlock(man->fin);
+}
+
+long get_last_eat_time(t_man *man)
+{
+	long last_eat_time;
+
+	pthread_mutex_lock(&man->last_eat);
+	last_eat_time = man->last_eat_time;
+	pthread_mutex_unlock(&man->last_eat);
+	return (last_eat_time);
+}
+
+void set_last_eat_time(t_man *man)
+{
+	pthread_mutex_lock(&man->last_eat);
+	man->last_eat_time = get_time_ms();
+	pthread_mutex_unlock(&man->last_eat);
 }

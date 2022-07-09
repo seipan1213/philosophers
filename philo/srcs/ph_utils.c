@@ -26,7 +26,7 @@ void ph_put_log(t_man *man, char *str)
 {
 	long time;
 
-	if (is_finish(man))
+	if (get_is_fin(man))
 		return;
 	time = get_time_ms();
 	printf("%ld %d %s\n", time, man->id, str);
