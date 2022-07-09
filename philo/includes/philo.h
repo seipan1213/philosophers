@@ -35,7 +35,6 @@ typedef struct s_man
 	long last_eat_time;
 	pthread_t thread;
 	bool *is_fin;
-	pthread_t watcher;
 } t_man;
 
 typedef struct s_philo
@@ -81,6 +80,5 @@ int ph_free(t_philo *ph, int ret);
 void ph_end(t_philo *ph);
 void ph_put_log(t_man *man, char *str);
 
-void *ph_watcher(void *arg);
-
+void ph_watcher(void *arg);
 #endif

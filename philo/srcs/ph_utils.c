@@ -29,9 +29,12 @@ void ph_put_log(t_man *man, char *str)
 {
 	long time;
 
-	if (get_is_fin(man))
-		return;
 	pthread_mutex_lock(man->print);
+	if (get_is_fin(man))
+	{
+		pthread_mutex_unlock(man->print);
+		return;
+	}
 	time = get_time_ms();
 	printf("%ld %d %s\n", time, man->id, str);
 	pthread_mutex_unlock(man->print);

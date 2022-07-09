@@ -1,24 +1,40 @@
 #include "philo.h"
 
-void *ph_watcher(void *arg)
+void ph_watcher(void *arg)
 {
 	long time;
-	t_man *man;
+	int i;
+	int fin_cnt;
+	t_philo *ph;
 
-	man = (t_man *)arg;
-	while (!get_is_fin(man))
+	ph = (t_philo *)arg;
+	while (!get_is_fin(&ph->men[0]))
 	{
-		time = get_time_ms();
-		if (time - get_last_eat_time(man) >= man->time_to_die)
+		i = -1;
+		fin_cnt = 0;
+		while (++i < ph->number_of_philosophers)
 		{
-			pthread_mutex_lock(man->fin);
-			if (!(*man->is_fin))
-				printf("%ld %d %s\n", time, man->id, DIED);
-			*man->is_fin = true;
-			pthread_mutex_unlock(man->fin);
+			time = get_time_ms();
+			if (time - get_last_eat_time(&ph->men[i]) >= ph->time_to_die)
+			{
+				pthread_mutex_lock(&ph->fin);
+				pthread_mutex_lock(&ph->print);
+				if (!ph->is_fin)
+					printf("%ld %d %s\n", get_time_ms(), ph->men[i].id, DIED);
+				ph->is_fin = true;
+				pthread_mutex_unlock(&ph->print);
+				pthread_mutex_unlock(&ph->fin);
+				return;
+			}
+			else if (ph->number_of_times_each_philosopher_must_eat > 0 && get_eat_cnt(&ph->men[i]) >= ph->number_of_times_each_philosopher_must_eat)
+				fin_cnt++;
 		}
-		else if (man->number_of_times_each_philosopher_must_eat > 0 && get_eat_cnt(man) >= man->number_of_times_each_philosopher_must_eat * man->number_of_philosophers)
-			set_is_fin(man, true);
+		if (fin_cnt == ph->number_of_philosophers)
+		{
+			set_is_fin(&ph->men[0], true);
+			return;
+		}
+		usleep(100);
 	}
-	return (NULL);
+	return;
 }

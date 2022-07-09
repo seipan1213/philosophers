@@ -73,15 +73,6 @@ void men_thread_detach(t_man *men, int size)
 		pthread_detach(men[i].thread);
 }
 
-void wachter_thread_detach(t_man *men, int size)
-{
-	int i;
-
-	i = -1;
-	while (++i < size)
-		pthread_detach(men[i].watcher);
-}
-
 void ph_main(t_philo *ph)
 {
 	int i;
@@ -100,20 +91,10 @@ void ph_main(t_philo *ph)
 	while (get_time_ms() % 100 != 0)
 		;
 	pthread_mutex_unlock(&ph->fin);
-	i = -1;
-	while (++i < ph->number_of_philosophers)
-	{
-		if (pthread_create(&ph->men[i].watcher, NULL, ph_watcher, &ph->men[i]) != 0)
-		{
-			men_thread_detach(ph->men, ph->number_of_philosophers);
-			wachter_thread_detach(ph->men, i);
-			return;
-		}
-	}
+	ph_watcher(ph);
 	i = -1;
 	while (++i < ph->number_of_philosophers)
 	{
 		pthread_join(ph->men[i].thread, NULL);
-		pthread_join(ph->men[i].watcher, NULL);
 	}
 }
