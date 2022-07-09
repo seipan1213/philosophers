@@ -22,7 +22,7 @@ int get_eat_cnt(t_man *man)
 	int eat_cnt;
 
 	pthread_mutex_lock(&man->eat);
-	eat_cnt = (*man->eat_cnt);
+	eat_cnt = man->eat_cnt;
 	pthread_mutex_unlock(&man->eat);
 	return (eat_cnt);
 }

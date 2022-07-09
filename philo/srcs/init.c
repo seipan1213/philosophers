@@ -52,7 +52,6 @@ bool ph_men_init(t_philo *ph)
 		ph->men[i].left = &ph->forks[(i + num - 1) % num];
 		ph->men[i].fin = &ph->fin;
 		ph->men[i].is_fin = &ph->is_fin;
-		ph->men[i].eat_cnt = &ph->eat_cnt;
 		ph->men[i].print = &ph->print;
 		ph->men[i].number_of_philosophers = ph->number_of_philosophers;
 		ph->men[i].time_to_die = ph->time_to_die;

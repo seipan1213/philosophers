@@ -30,7 +30,7 @@ typedef struct s_man
 	pthread_mutex_t *fin;
 	pthread_mutex_t eat;
 	pthread_mutex_t *print;
-	int *eat_cnt;
+	int eat_cnt;
 	int id;
 	long last_eat_time;
 	pthread_t thread;
@@ -49,7 +49,6 @@ typedef struct s_philo
 	t_man *men;
 	pthread_mutex_t fin;
 	pthread_mutex_t print;
-	int eat_cnt;
 	bool is_fin;
 } t_philo;
 
