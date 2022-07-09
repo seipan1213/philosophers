@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ph_main.c                                          :+:      :+:    :+:   */
+/*   ph_work.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:38:25 by sehattor          #+#    #+#             */
-/*   Updated: 2022/07/09 22:39:26 by sehattor         ###   ########.fr       */
+/*   Updated: 2022/07/09 22:55:14 by sehattor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,8 @@ void	ph_work_think(t_man *man)
 	ph_put_log(man, THINKING);
 }
 
-void	ph_work_eat(t_man *man)
+bool	ph_pick_fork(t_man *man)
 {
-	long	start;
-
 	if (man->id % 2)
 		pthread_mutex_lock(man->right);
 	else
@@ -31,13 +29,25 @@ void	ph_work_eat(t_man *man)
 	if (man->right == man->left)
 	{
 		man_sleep(man->time_to_die, man);
-		pthread_mutex_unlock(man->right);
-		return ;
+		if (man->id % 2)
+			pthread_mutex_unlock(man->right);
+		else
+			pthread_mutex_unlock(man->left);
+		return (true);
 	}
 	if (man->id % 2)
 		pthread_mutex_lock(man->left);
 	else
 		pthread_mutex_lock(man->right);
+	return (false);
+}
+
+void	ph_work_eat(t_man *man)
+{
+	long	start;
+
+	if (ph_pick_fork(man))
+		return ;
 	start = get_time_ms();
 	ph_put_log(man, PIC_FORK);
 	ph_put_log(man, EATING);
@@ -74,28 +84,4 @@ void	*ph_work(void *arg)
 		ph_work_think(man);
 	}
 	return (NULL);
-}
-
-void	ph_main(t_philo *ph)
-{
-	int	i;
-
-	i = -1;
-	pthread_mutex_lock(&ph->fin);
-	while (++i < ph->number_of_philosophers)
-	{
-		if (pthread_create(&ph->men[i].thread, NULL, ph_work, &ph->men[i]) != 0)
-		{
-			men_thread_detach(ph->men, i);
-			pthread_mutex_unlock(&ph->fin);
-			return ;
-		}
-	}
-	while (get_time_ms() % 100 != 0)
-		;
-	pthread_mutex_unlock(&ph->fin);
-	ph_watcher(ph);
-	i = -1;
-	while (++i < ph->number_of_philosophers)
-		pthread_join(ph->men[i].thread, NULL);
 }

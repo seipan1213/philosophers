@@ -6,7 +6,7 @@
 /*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:49:40 by sehattor          #+#    #+#             */
-/*   Updated: 2022/07/09 22:50:29 by sehattor         ###   ########.fr       */
+/*   Updated: 2022/07/09 22:56:16 by sehattor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,15 @@ typedef struct s_philo
 	bool			is_fin;
 }					t_philo;
 
-/* ph_main */
+/* main */
+void				ph_main(t_philo *ph);
+
+/* ph_work */
 void				ph_work_think(t_man *man);
+bool				ph_pick_fork(t_man *man);
 void				ph_work_eat(t_man *man);
 void				ph_work_sleep(t_man *man);
 void				*ph_work(void *arg);
-void				ph_main(t_philo *ph);
 
 /* utils */
 int					put_err(char *str);
