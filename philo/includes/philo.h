@@ -8,17 +8,15 @@
 #include <pthread.h>
 #include <sys/time.h>
 
-#define ARG_ERR "ARGERR"
-#define MALLOC_ERR "MALLOCERR"
-#define MUTEX_ERR "MUTEXERR"
+#define ARG_ERR "Error\nargsNum: 4 or 5(range: int)\nphiloNum max:200   other min:60"
+#define MALLOC_ERR "Error\nmalloc"
+#define MUTEX_ERR "Error\nmutex"
 
 #define PIC_FORK "has taken a fork"
 #define EATING "is eating"
 #define SLEEPING "is sleeping"
 #define THINKING "is thinking"
 #define DIED "died"
-
-#define TIME_INTERVAL 500 // NOTE: 数msズレる問題
 
 typedef struct s_man
 {
@@ -65,7 +63,7 @@ void ph_main(t_philo *ph);
 
 int put_err(char *str);
 size_t ft_strlen(char *str);
-int ft_atoi(char *str);
+int ph_atoi(char *str);
 void ft_bzero(void *s, size_t len);
 long get_time_ms(void);
 

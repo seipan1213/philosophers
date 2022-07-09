@@ -20,7 +20,23 @@ size_t ft_strlen(char *str)
 	return (i);
 }
 
-int ft_atoi(char *str) // TODO:修正予定
+int ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t cnt;
+
+	cnt = 0;
+	if (n == 0)
+		return (0);
+	while (s1[cnt] && s2[cnt] && cnt < n - 1)
+	{
+		if (s1[cnt] != s2[cnt])
+			return ((unsigned char)s1[cnt] - (unsigned char)s2[cnt]);
+		cnt++;
+	}
+	return ((unsigned char)s1[cnt] - (unsigned char)s2[cnt]);
+}
+
+int ph_atoi(char *str)
 {
 	int i;
 	int m;
@@ -41,6 +57,8 @@ int ft_atoi(char *str) // TODO:修正予定
 		ans *= 10;
 		ans += str[i++] - '0';
 	}
+	if (i > 10 || (i == 10 && ((m == 1 && str[i - 1] - '0' > 7) || (m == -1 && str[i - 1] - '0' > 8))))
+		return (-1);
 	return ((int)ans * m);
 }
 

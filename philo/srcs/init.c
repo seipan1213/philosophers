@@ -1,18 +1,34 @@
 #include "philo.h"
 
+bool ph_check_args(t_philo *ph, int argc)
+{
+	if (ph->number_of_philosophers < 1 || ph->number_of_philosophers > 200)
+		return (true);
+	if (ph->time_to_die < 60)
+		return (true);
+	if (ph->time_to_eat < 60)
+		return (true);
+	if (ph->time_to_sleep < 60)
+		return (true);
+	if (argc == 6 && ph->number_of_times_each_philosopher_must_eat < 1)
+		return (true);
+	return (false);
+}
+
 bool ph_args_init(int argc, char **argv, t_philo *ph)
 {
 	if (argc != 5 && argc != 6)
 		return (put_err(ARG_ERR));
-	ph->number_of_philosophers = ft_atoi(argv[1]);
-	ph->time_to_die = ft_atoi(argv[2]);
-	ph->time_to_eat = ft_atoi(argv[3]);
-	ph->time_to_sleep = ft_atoi(argv[4]);
+	ph->number_of_philosophers = ph_atoi(argv[1]);
+	ph->time_to_die = ph_atoi(argv[2]);
+	ph->time_to_eat = ph_atoi(argv[3]);
+	ph->time_to_sleep = ph_atoi(argv[4]);
 	if (argc == 6)
-		ph->number_of_times_each_philosopher_must_eat = ft_atoi(argv[5]);
+		ph->number_of_times_each_philosopher_must_eat = ph_atoi(argv[5]);
 	else
 		ph->number_of_times_each_philosopher_must_eat = -1;
-	// TODO: argv 数値判定
+	if (ph_check_args(ph, argc))
+		return (put_err(ARG_ERR));
 	return (false);
 }
 
@@ -28,6 +44,8 @@ bool ph_men_init(t_philo *ph)
 	i = -1;
 	while (++i < num)
 	{
+		if (pthread_mutex_init(&ph->men[i].last_eat, NULL))
+			return (put_err(MUTEX_ERR));
 		ph->men[i].id = i + 1;
 		ph->men[i].right = &ph->forks[i];
 		ph->men[i].left = &ph->forks[(i + num - 1) % num];
@@ -63,6 +81,8 @@ bool ph_main_init(t_philo *ph)
 	if (pthread_mutex_init(&ph->fin, NULL))
 		return (put_err(MUTEX_ERR));
 	if (pthread_mutex_init(&ph->eat, NULL))
+		return (put_err(MUTEX_ERR));
+	if (pthread_mutex_init(&ph->print, NULL))
 		return (put_err(MUTEX_ERR));
 	return (false);
 }
