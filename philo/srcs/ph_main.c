@@ -1,15 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ph_main.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/07/09 22:38:25 by sehattor          #+#    #+#             */
+/*   Updated: 2022/07/09 22:39:26 by sehattor         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-void ph_work_think(t_man *man)
+void	ph_work_think(t_man *man)
 {
 	if (get_is_fin(man))
-		return;
+		return ;
 	ph_put_log(man, THINKING);
 }
 
-void ph_work_eat(t_man *man)
+void	ph_work_eat(t_man *man)
 {
-	long start;
+	long	start;
 
 	if (man->id % 2)
 		pthread_mutex_lock(man->right);
@@ -20,7 +32,7 @@ void ph_work_eat(t_man *man)
 	{
 		man_sleep(man->time_to_die, man);
 		pthread_mutex_unlock(man->right);
-		return;
+		return ;
 	}
 	if (man->id % 2)
 		pthread_mutex_lock(man->left);
@@ -35,20 +47,20 @@ void ph_work_eat(t_man *man)
 	pthread_mutex_unlock(man->left);
 }
 
-void ph_work_sleep(t_man *man)
+void	ph_work_sleep(t_man *man)
 {
-	long start;
+	long	start;
 
 	start = get_time_ms();
 	if (get_is_fin(man))
-		return;
+		return ;
 	ph_put_log(man, SLEEPING);
 	man_sleep(man->time_to_sleep - (get_time_ms() - start), man);
 }
 
-void *ph_work(void *arg)
+void	*ph_work(void *arg)
 {
-	t_man *man;
+	t_man	*man;
 
 	man = (t_man *)arg;
 	set_last_eat_time(man);
@@ -64,9 +76,9 @@ void *ph_work(void *arg)
 	return (NULL);
 }
 
-void ph_main(t_philo *ph)
+void	ph_main(t_philo *ph)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	pthread_mutex_lock(&ph->fin);
@@ -76,7 +88,7 @@ void ph_main(t_philo *ph)
 		{
 			men_thread_detach(ph->men, i);
 			pthread_mutex_unlock(&ph->fin);
-			return;
+			return ;
 		}
 	}
 	while (get_time_ms() % 100 != 0)

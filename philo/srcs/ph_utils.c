@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ph_utils.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/07/09 22:39:40 by sehattor          #+#    #+#             */
+/*   Updated: 2022/07/09 22:40:10 by sehattor         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "philo.h"
 
-bool ph_check_args(t_philo *ph, int argc)
+bool	ph_check_args(t_philo *ph, int argc)
 {
 	if (ph->number_of_philosophers < 1 || ph->number_of_philosophers > 200)
 		return (true);
@@ -16,7 +27,7 @@ bool ph_check_args(t_philo *ph, int argc)
 	return (false);
 }
 
-int ph_free(t_philo *ph, int ret)
+int	ph_free(t_philo *ph, int ret)
 {
 	if (ph->forks != NULL)
 		free(ph->forks);
@@ -25,9 +36,9 @@ int ph_free(t_philo *ph, int ret)
 	return (ret);
 }
 
-void ph_end(t_philo *ph)
+void	ph_end(t_philo *ph)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (++i < ph->number_of_philosophers)
@@ -40,24 +51,24 @@ void ph_end(t_philo *ph)
 	ph_free(ph, 0);
 }
 
-void ph_put_log(t_man *man, char *str)
+void	ph_put_log(t_man *man, char *str)
 {
-	long time;
+	long	time;
 
 	pthread_mutex_lock(man->print);
 	if (get_is_fin(man))
 	{
 		pthread_mutex_unlock(man->print);
-		return;
+		return ;
 	}
 	time = get_time_ms();
 	printf("%ld %d %s\n", time, man->id, str);
 	pthread_mutex_unlock(man->print);
 }
 
-void men_thread_detach(t_man *men, int size)
+void	men_thread_detach(t_man *men, int size)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (++i < size)

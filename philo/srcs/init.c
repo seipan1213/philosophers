@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/07/09 22:34:40 by sehattor          #+#    #+#             */
+/*   Updated: 2022/07/09 22:35:10 by sehattor         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-bool ph_args_init(int argc, char **argv, t_philo *ph)
+bool	ph_args_init(int argc, char **argv, t_philo *ph)
 {
 	if (argc != 5 && argc != 6)
 		return (put_err(ARG_ERR));
@@ -17,7 +29,7 @@ bool ph_args_init(int argc, char **argv, t_philo *ph)
 	return (false);
 }
 
-bool ph_man_init(t_philo *ph, int i, int num)
+bool	ph_man_init(t_philo *ph, int i, int num)
 {
 	if (pthread_mutex_init(&ph->men[i].eat, NULL))
 		return (put_err(MUTEX_ERR));
@@ -36,10 +48,10 @@ bool ph_man_init(t_philo *ph, int i, int num)
 	return (false);
 }
 
-bool ph_men_init(t_philo *ph)
+bool	ph_men_init(t_philo *ph)
 {
-	int num;
-	int i;
+	int	num;
+	int	i;
 
 	num = ph->number_of_philosophers;
 	ph->men = malloc(sizeof(t_man) * num);
@@ -55,10 +67,10 @@ bool ph_men_init(t_philo *ph)
 	return (false);
 }
 
-bool ph_main_init(t_philo *ph)
+bool	ph_main_init(t_philo *ph)
 {
-	int num;
-	int i;
+	int	num;
+	int	i;
 
 	num = ph->number_of_philosophers;
 	ph->forks = malloc((sizeof(pthread_mutex_t) * num));
@@ -77,7 +89,7 @@ bool ph_main_init(t_philo *ph)
 	return (false);
 }
 
-bool ph_init(int argc, char **argv, t_philo *ph)
+bool	ph_init(int argc, char **argv, t_philo *ph)
 {
 	ft_bzero(ph, sizeof(t_philo));
 	if (ph_args_init(argc, argv, ph))
