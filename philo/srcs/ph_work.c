@@ -6,7 +6,7 @@
 /*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:38:25 by sehattor          #+#    #+#             */
-/*   Updated: 2022/07/10 12:12:54 by sehattor         ###   ########.fr       */
+/*   Updated: 2022/07/10 12:33:10 by sehattor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ void	ph_work_eat(t_man *man)
 	ph_put_log(man, EATING);
 	set_last_eat_time(man, true);
 	man_sleep(man->time_to_eat - (get_time_ms() - start), man);
-	pthread_mutex_unlock(man->right);
 	pthread_mutex_unlock(man->left);
+	pthread_mutex_unlock(man->right);
 }
 
 void	ph_work_sleep(t_man *man)
