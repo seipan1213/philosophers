@@ -6,13 +6,13 @@
 /*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:31:26 by sehattor          #+#    #+#             */
-/*   Updated: 2022/07/09 22:54:00 by sehattor         ###   ########.fr       */
+/*   Updated: 2022/07/10 11:58:11 by sehattor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ph_main(t_philo *ph)
+bool	ph_main(t_philo *ph)
 {
 	int	i;
 
@@ -24,7 +24,7 @@ void	ph_main(t_philo *ph)
 		{
 			men_thread_detach(ph->men, i);
 			pthread_mutex_unlock(&ph->fin);
-			return ;
+			return (put_err(MUTEX_ERR));
 		}
 	}
 	while (get_time_ms() % 100 != 0)
@@ -34,6 +34,7 @@ void	ph_main(t_philo *ph)
 	i = -1;
 	while (++i < ph->number_of_philosophers)
 		pthread_join(ph->men[i].thread, NULL);
+	return (false);
 }
 
 int	main(int argc, char **argv)
@@ -42,6 +43,10 @@ int	main(int argc, char **argv)
 
 	if (ph_init(argc, argv, &ph))
 		return (1);
-	ph_main(&ph);
+	if (ph_main(&ph))
+	{
+		ph_end(&ph);
+		return (1);
+	}
 	ph_end(&ph);
 }
