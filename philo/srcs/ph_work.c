@@ -6,7 +6,7 @@
 /*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:38:25 by sehattor          #+#    #+#             */
-/*   Updated: 2022/07/09 23:09:59 by sehattor         ###   ########.fr       */
+/*   Updated: 2022/07/10 12:07:22 by sehattor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ void	*ph_work(void *arg)
 	t_man	*man;
 
 	man = (t_man *)arg;
-	set_last_eat_time(man, false);
 	get_is_fin(man);
+	set_last_eat_time(man, false);
 	if (man->id % 2 == 1)
 		man_sleep(man->time_to_eat / 2, man);
 	while (!get_is_fin(man))
