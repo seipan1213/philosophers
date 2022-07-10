@@ -6,7 +6,7 @@
 /*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:38:25 by sehattor          #+#    #+#             */
-/*   Updated: 2022/07/10 12:51:52 by sehattor         ###   ########.fr       */
+/*   Updated: 2022/07/10 18:31:06 by sehattor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ bool	ph_pick_fork(t_man *man)
 	ph_put_log(man, PIC_FORK);
 	if (man->right == man->left)
 	{
-		man_sleep(man->time_to_die, man);
+		man_sleep(man->time_to_die + 10, man);
 		pthread_mutex_unlock(man->right);
 		return (true);
 	}
