@@ -6,7 +6,7 @@
 /*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:38:25 by sehattor          #+#    #+#             */
-/*   Updated: 2022/07/10 12:07:22 by sehattor         ###   ########.fr       */
+/*   Updated: 2022/07/10 12:12:54 by sehattor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ bool	ph_pick_fork(t_man *man)
 
 void	ph_work_eat(t_man *man)
 {
-	long	start;
+	long long	start;
 
 	if (ph_pick_fork(man))
 		return ;
@@ -50,7 +50,7 @@ void	ph_work_eat(t_man *man)
 
 void	ph_work_sleep(t_man *man)
 {
-	long	start;
+	long long	start;
 
 	start = get_time_ms();
 	if (get_is_fin(man))

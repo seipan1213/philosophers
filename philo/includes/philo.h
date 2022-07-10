@@ -6,7 +6,7 @@
 /*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:49:40 by sehattor          #+#    #+#             */
-/*   Updated: 2022/07/10 11:58:42 by sehattor         ###   ########.fr       */
+/*   Updated: 2022/07/10 12:13:23 by sehattor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ typedef struct s_man
 	pthread_t		thread;
 	int				id;
 	int				eat_cnt;
-	long			last_eat_time;
+	long long		last_eat_time;
 	bool			*is_fin;
 }					t_man;
 
@@ -81,13 +81,13 @@ int					ft_strncmp(const char *s1, const char *s2, size_t n);
 int					ph_atoi(char *str);
 void				ft_bzero(void *s, size_t len);
 
-long				get_time_ms(void);
-void				man_sleep(long sleep_time, t_man *man);
+long long			get_time_ms(void);
+void				man_sleep(long long sleep_time, t_man *man);
 
 int					get_eat_cnt(t_man *man);
 bool				get_is_fin(t_man *man);
 void				set_is_fin(t_man *man, bool is_fin);
-long				get_last_eat_time(t_man *man);
+long long			get_last_eat_time(t_man *man);
 void				set_last_eat_time(t_man *man, bool is_cnt);
 
 /* init */

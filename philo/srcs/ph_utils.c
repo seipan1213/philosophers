@@ -6,7 +6,7 @@
 /*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:39:40 by sehattor          #+#    #+#             */
-/*   Updated: 2022/07/09 22:40:10 by sehattor         ###   ########.fr       */
+/*   Updated: 2022/07/10 12:14:32 by sehattor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	ph_end(t_philo *ph)
 
 void	ph_put_log(t_man *man, char *str)
 {
-	long	time;
+	long long	time;
 
 	pthread_mutex_lock(man->print);
 	if (get_is_fin(man))
@@ -62,7 +62,7 @@ void	ph_put_log(t_man *man, char *str)
 		return ;
 	}
 	time = get_time_ms();
-	printf("%ld %d %s\n", time, man->id, str);
+	printf("%lld %d %s\n", time, man->id, str);
 	pthread_mutex_unlock(man->print);
 }
 

@@ -6,7 +6,7 @@
 /*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:32:41 by sehattor          #+#    #+#             */
-/*   Updated: 2022/07/10 12:08:49 by sehattor         ###   ########.fr       */
+/*   Updated: 2022/07/10 12:14:24 by sehattor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 bool	ph_watcher_util(t_philo *ph, int i, int *fin_cnt)
 {
-	if (get_last_eat_time(&ph->men[i]) > 0 &&
-		get_time_ms() - get_last_eat_time(&ph->men[i]) >= ph->time_to_die)
+	if (get_last_eat_time(&ph->men[i]) > 0
+		&& get_time_ms() - get_last_eat_time(&ph->men[i]) >= ph->time_to_die)
 	{
 		pthread_mutex_lock(&ph->print);
 		pthread_mutex_lock(&ph->fin);
 		if (!ph->is_fin)
-			printf("%ld %d %s\n", get_time_ms(), ph->men[i].id, DIED);
+			printf("%lld %d %s\n", get_time_ms(), ph->men[i].id, DIED);
 		ph->is_fin = true;
 		pthread_mutex_unlock(&ph->fin);
 		pthread_mutex_unlock(&ph->print);

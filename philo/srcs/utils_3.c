@@ -6,7 +6,7 @@
 /*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:35:42 by sehattor          #+#    #+#             */
-/*   Updated: 2022/07/09 23:09:34 by sehattor         ###   ########.fr       */
+/*   Updated: 2022/07/10 12:13:39 by sehattor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ void	set_is_fin(t_man *man, bool is_fin)
 	pthread_mutex_unlock(man->fin);
 }
 
-long	get_last_eat_time(t_man *man)
+long long	get_last_eat_time(t_man *man)
 {
-	long	last_eat_time;
+	long long	last_eat_time;
 
 	pthread_mutex_lock(&man->eat);
 	last_eat_time = man->last_eat_time;

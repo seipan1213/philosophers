@@ -6,7 +6,7 @@
 /*   By: sehattor <sehattor@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/09 22:36:23 by sehattor          #+#    #+#             */
-/*   Updated: 2022/07/09 22:38:19 by sehattor         ###   ########.fr       */
+/*   Updated: 2022/07/10 12:13:47 by sehattor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,9 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 
 int	ph_atoi(char *str)
 {
-	int		i;
-	int		m;
-	long	ans;
+	int			i;
+	int			m;
+	long long	ans;
 
 	i = 0;
 	m = 1;
